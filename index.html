@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MTsN 14 Jakarta — AI Digital Comic Studio v1.0</title>
+<link rel="stylesheet" href="style.css">
+
+<!-- Firebase SDK & Inisialisasi Database -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  // Konfigurasi Firebase Anda (Silakan ganti dengan kredensial dari Firebase Console Anda)
+  const firebaseConfig = {
+    apiKey: "AIzaSyD-ContohAPIKeyAndaDisini-xxxx",
+    authDomain: "mtsn14-comic-studio.firebaseapp.com",
+    projectId: "mtsn14-comic-studio",
+    storageBucket: "mtsn14-comic-studio.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abcdef123456789"
+  };
+
+  // Inisialisasi Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // Ekspose modul ke objek global agar bisa diakses oleh app.js
+  window.db = db;
+  window.auth = auth;
+  window.firebaseModules = { collection, addDoc, getDocs, doc, setDoc, deleteDoc, signInWithEmailAndPassword, signOut, onAuthStateChanged };
+  
+  console.log("Firebase berhasil diinisialisasi untuk MTsN 14 Comic Studio.");
+</script>
+</head>
+<body>
+<div id="login">
+  <div class="login-card">
+    <div class="logo">✦</div>
+    <div class="eyebrow">MTsN 14 JAKARTA</div>
+    <h1>AI Digital Comic Studio</h1>
+    <p>Versi 1.0 · Portal Admin & Guru</p>
+    <form id="loginForm">
+      <input id="username" value="" placeholder="Username" required>
+      <input id="password" value="" type="password" placeholder="Password" required>
+      <button class="primary">Masuk</button>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<aside>
+  <div class="brand"><div class="brand-logo">✦</div><div><b>AI COMIC STUDIO</b><small>MTsN 14 Jakarta</small></div></div>
+  <nav>
+    <button data-page="dashboard">Dashboard</button>
+    <button data-page="generator">Comic Generator</button>
+    <button data-page="storyboard">Storyboard</button>
+    <button data-page="characters">Characters</button>
+    <button data-page="prompt">Prompt Studio</button>
+    <button data-page="editor">Comic Editor</button>
+    <button data-page="projects">Proyek Saya</button>
+    <button data-page="settings">Pengaturan</button>
+    <button id="adminNav" data-page="admin">Admin · Akun Guru</button>
+  </nav>
+  <button id="logout" class="logout">Keluar</button>
+</aside>
+
+<main>
+<header><div><span class="eyebrow">AI LEARNING STUDIO</span><h2 id="pageTitle">Dashboard</h2></div><span id="roleBadge" class="badge"></span></header>
+
+<section id="dashboard" class="page active">
+  <div class="hero">
+    <div>
+      <span class="eyebrow light">VERSI 1.0</span>
+      <h1>Ubah materi pelajaran menjadi komik digital.</h1>
+      <p>Bangun storyboard, karakter konsisten, prompt AI, dan pratinjau komik untuk pembelajaran MTs.</p>
+      <button class="primary" onclick="go('generator')">＋ Buat Komik Baru</button>
+    </div>
+  </div>
+  <div class="stats">
+    <div>Proyek<strong id="statProjects">0</strong></div>
+    <div>Panel<strong id="statPanels">0</strong></div>
+    <div>Mapel<strong>17</strong></div>
+    <div>Status<strong>Ready</strong></div>
+  </div>
+  <div class="card"><h3>Akun Aktif</h3><p id="accountInfo"></p></div>
+</section>
+
+<section id="generator" class="page">
+  <div class="intro"><span class="eyebrow">STEP 01</span><h2>Comic Generator</h2><p>Masukkan materi untuk membuat storyboard dan master prompt.</p></div>
+  <div class="card grid">
+    <label>Mapel<select id="subject"></select></label>
+    <label>Kelas<select id="grade"><option>VII</option><option selected>VIII</option><option>IX</option></select></label>
+    <label>Jumlah Panel<select id="panelCount"><option>4</option><option selected>6</option><option>8</option><option>10</option><option>12</option></select></label>
+    <label>Gaya Visual<select id="visualStyle"><option>Educational Comic</option><option>Webtoon</option><option>Manga</option><option>Cartoon</option><option>Semi Realistic</option><option>Islamic Educational</option></select></label>
+    <label class="full">Judul Materi<input id="title" value="Materi Pembelajaran"></label>
+    <label class="full">Tujuan Pembelajaran<textarea id="objective">Peserta didik mampu memahami, menganalisis, dan menerapkan materi dalam situasi kontekstual.</textarea></label>
+    <label class="full">Materi<textarea id="material">Tuliskan materi, konsep utama, contoh, langkah penyelesaian, istilah penting, dan nilai karakter.</textarea></label>
+    <label>Bahasa Dialog<select id="language"><option>Bahasa Indonesia</option><option>Bahasa Indonesia + istilah Arab</option><option>Bahasa Inggris</option></select></label>
+    <label>Nada Cerita<select id="tone"><option>Modern & Friendly</option><option>Formal & Akademik</option><option>Humoris Edukatif</option><option>Religius & Reflektif</option></select></label>
+    <label class="check"><input type="checkbox" id="consistent" checked> Karakter konsisten</label>
+    <label class="check"><input type="checkbox" id="hots" checked> Akhiri dengan HOTS</label>
+    <button id="generate" class="primary full">Generate Storyboard + Prompt</button>
+  </div>
+</section>
+
+<section id="storyboard" class="page"><div class="intro"><span class="eyebrow">STEP 02</span><h2>Storyboard</h2></div><div id="storyList"></div></section>
+
+<section id="characters" class="page"><div class="intro"><span class="eyebrow">STEP 03</span><h2>Character Builder</h2></div><div id="charactersList"></div><button id="addCharacter">＋ Tambah Karakter</button></section>
+
+<section id="prompt" class="page"><div class="intro"><span class="eyebrow">STEP 04</span><h2>Prompt Studio</h2></div><div class="card"><textarea id="promptBox" class="promptbox"></textarea><button id="copyPrompt">Salin Prompt</button> <button id="saveProject">Simpan Proyek</button></div></section>
+
+<section id="editor" class="page"><div class="intro"><span class="eyebrow">STEP 05</span><h2>Comic Editor</h2></div><div id="comicCanvas"></div></section>
+
+<section id="projects" class="page"><div class="intro"><span class="eyebrow">LIBRARY</span><h2>Proyek Saya</h2></div><div id="projectList"></div></section>
+
+<section id="settings" class="page"><div class="intro"><span class="eyebrow">SETTINGS</span><h2>Pengaturan</h2></div>
+<div class="card grid"><label>Nama Madrasah<input value="MTs Negeri 14 Jakarta"></label><label>Pengelola<input value="Azhary Mardhani, S.Kom."></label><label>Format Ekspor<select><option>F4 Portrait</option><option>A4 Portrait</option><option>16:9 Presentation</option><option>9:16 Social Media</option></select></label></div></section>
+
+<section id="admin" class="page">
+<div class="intro"><span class="eyebrow">ADMIN CONTROL</span><h2>Manajemen Akun Guru</h2><p>Admin membuat akun guru sesuai mapel dan kelas.</p></div>
+<div class="card grid">
+<label>Nama Guru<input id="teacherName" placeholder="Nama lengkap"></label>
+<label>Username<input id="teacherUsername" placeholder="username"></label>
+<label>Password<input id="teacherPassword" placeholder="password"></label>
+<label>Mapel<select id="teacherSubject"></select></label>
+<label>Kelas<select id="teacherGrade"><option>VII</option><option>VIII</option><option>IX</option><option>VII–IX</option></select></label>
+<button id="createTeacher" class="primary full">＋ Buat Akun Guru</button>
+</div>
+<div class="card table-wrap"><table><thead><tr><th>Nama</th><th>Username</th><th>Mapel</th><th>Kelas</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="teacherTable"></tbody></table></div>
+</section>
+</main></div>
+<script src="app.js"></script>
+</body></html>
