@@ -61,8 +61,8 @@ async function initFirebaseSync() {
       const defaultAdmin = {
         id: 'admin_utama',
         name: 'Administrator',
-        username: 'Azhary',
-        password: 'Kangguru00',
+        username: 'admin',
+        password: 'admin123',
         role: 'admin',
         subject: 'Administrator',
         grade: 'VII–IX',
