@@ -5,36 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MTsN 14 Jakarta — AI Digital Comic Studio v1.0</title>
 <link rel="stylesheet" href="style.css">
-
-<!-- Firebase SDK & Inisialisasi Database -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-  // Konfigurasi Firebase Anda (Silakan ganti dengan kredensial dari Firebase Console Anda)
-  const firebaseConfig = {
-    apiKey: "AIzaSyA3v19W60OQ5qfKYELEvmmkKaO-Gf6zHgs",
-  authDomain: "informatica-class.firebaseapp.com",
-  projectId: "informatica-class",
-  storageBucket: "informatica-class.firebasestorage.app",
-  messagingSenderId: "352869091816",
-  appId: "1:352869091816:web:1cdeeed1b76506542bbc5d",
-  measurementId: "G-1RC0FDKV92"
-  };
-
-  // Inisialisasi Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
-
-  // Ekspose modul ke objek global agar bisa diakses oleh app.js
-  window.db = db;
-  window.auth = auth;
-  window.firebaseModules = { collection, addDoc, getDocs, doc, setDoc, deleteDoc, signInWithEmailAndPassword, signOut, onAuthStateChanged };
-  
-  console.log("Firebase berhasil diinisialisasi untuk MTsN 14 Comic Studio.");
-</script>
 </head>
 <body>
 <div id="login">
@@ -48,6 +18,7 @@
       <input id="password" value="" type="password" placeholder="Password" required>
       <button class="primary">Masuk</button>
     </form>
+  
   </div>
 </div>
 
